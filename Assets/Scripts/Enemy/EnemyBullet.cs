@@ -8,7 +8,7 @@ public class EnemyBullet : MonoBehaviour {
     public float attackPower = 1f;
 	// Use this for initialization
 	void Start () {
-        transform.LookAt(Camera.main.transform);
+        transform.LookAt(Camera.main.transform.position + Camera.main.transform.forward * 2.5f + new Vector3(Random.Range(-1, 2) *  0.5f, Random.Range(-1, 2) * 0.2f, 0f));
         GetComponent<Rigidbody>().AddForce(transform.forward * speed);
         Destroy(gameObject, 10f);
     }

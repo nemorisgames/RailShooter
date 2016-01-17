@@ -5,6 +5,7 @@ public class InGame : MonoBehaviour {
     PreloadedVariables preloadedVariables;
     public Hero hero;
     public int currentPrize;
+    public int maxEnemies = 8;
     public int enemiesDefeated;
     public float initialTime;
     public float timeBetweenEnemies;
@@ -46,13 +47,15 @@ public class InGame : MonoBehaviour {
 
     }
 
-    public void EnemyEliminated(Enemy enemy)
+    public void EnemyEliminated(Enemy enemy, bool alive)
     {
-
+        enemiesInScreen.Remove(enemy);
     }
 
     public void CreateEnemy(Enemy.DifficultLevel difficult)
     {
+        if (enemiesInScreen.Count > maxEnemies)
+            return;
         ArrayList enemiesInDifficulty = new ArrayList();
         for(int i = 0; i < enemies.Length; i++)
         {
@@ -70,6 +73,7 @@ public class InGame : MonoBehaviour {
         GameObject g = (GameObject)Instantiate(currentEnemy);
         Enemy e = g.GetComponent<Enemy>();
         enemiesInScreen.Add(e);
+        print(enemiesInScreen.Count);
     }
 
     void OnTriggerEnter(Collider other)
@@ -82,6 +86,7 @@ public class InGame : MonoBehaviour {
             {
                 print("game over");
             }
+            Destroy(other.gameObject);
         }
     }
 

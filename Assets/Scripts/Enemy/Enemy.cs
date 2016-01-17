@@ -72,6 +72,7 @@ public class Enemy : MonoBehaviour {
                 StartCoroutine(setNextDestiny());
                 break;
             case EnemyState.GettingOut:
+                inGame.EnemyEliminated(this, true);
                 Destroy(gameObject);
                 break;
         }
@@ -82,6 +83,7 @@ public class Enemy : MonoBehaviour {
         hitPoints -= damage;
         if (hitPoints <= 0)
         {
+            inGame.EnemyEliminated(this, false);
             Destroy(gameObject);
         }
     }
