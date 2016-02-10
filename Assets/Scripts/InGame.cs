@@ -81,11 +81,7 @@ public class InGame : MonoBehaviour {
         EnemyBullet b = other.GetComponent<EnemyBullet>();
         if (b != null)
         {
-            hero.currentHitPoints -= b.attackPower;
-            if(hero.currentHitPoints <= 0)
-            {
-                print("game over");
-            }
+            hero.GetHit(b.attackPower);
             Destroy(other.gameObject);
         }
     }

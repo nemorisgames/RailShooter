@@ -6,7 +6,8 @@ public class Enemy : MonoBehaviour {
     public float enemyHeight = 2f;
     public enum DifficultLevel { VeryEasy, Easy, Normal, Hard, VeryHard};
     public DifficultLevel difficultLevel;
-    public enum AttackTypes{ Melee, Ranged };
+    public enum AttackTypes{ Melee, Ranged, Jumping };
+    public float meleeDamage = 1f;
     public AttackTypes attackType;
     public float attackTimer;
     public float attackTimeRandomizer;
@@ -31,14 +32,13 @@ public class Enemy : MonoBehaviour {
     public EnemyState enemyState = EnemyState.Spawning;
     TweenPosition tp;
     // Use this for initialization
-    void Start () {
+    void Start() {
         tp = GetComponent<TweenPosition>();
         inGame = Camera.main.GetComponent<InGame>();
         currentPattern = patterns[Random.Range(0, patterns.Length)];
         print(patterns.Length + " " + patterns[0].pointPositions.Length);
         Vector3 initialPosition = inGame.getPointPosition(currentPattern.pointPositions[0]);
         transform.position = initialPosition + new Vector3(0f, -enemyHeight, 0f);
-
         setDestiny(initialPosition, timeSpawn);
         //tp.PlayForward();
     }
@@ -100,6 +100,19 @@ public class Enemy : MonoBehaviour {
         else
         {
             Vector3 destiny = inGame.getPointPosition(currentPattern.pointPositions[currentPatternIndex]);
+            switch (attackType)
+            {
+                case AttackTypes.Jumping:
+                    if(currentPatternIndex == 1)
+                        destiny += Vector3.up * 3f;
+                    break;
+                case AttackTypes.Melee:
+                    if (currentPatternIndex == 1)
+                        destiny += Vector3.up * 3f;
+                    break;
+                default:
+                    break;
+            }
             setDestiny(destiny, getTimeUsingDistance(transform.position, destiny, movementSpeed));
         }
     }
@@ -126,7 +139,13 @@ public class Enemy : MonoBehaviour {
             case EnemyState.Moving:
                 if(attackPattern != AttackPattern.None && Time.time >= currentAttackTimer)
                 {
-                    Instantiate(bullet[Random.Range(0, bullet.Length - 1)].gameObject, transform.position + transform.forward, transform.rotation);
+                    if (bullet.Length > 0)
+                        Instantiate(bullet[Random.Range(0, bullet.Length - 1)].gameObject, transform.position + transform.forward, transform.rotation);
+                    else
+                    {
+                        print("Melee damage");
+                        inGame.hero.GetHit(meleeDamage);
+                    }
                     if (attackPattern == AttackPattern.Once)
                         attackPattern = AttackPattern.None;
                     else

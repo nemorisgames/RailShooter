@@ -42,6 +42,11 @@ public class Hero : MonoBehaviour {
     public void GetHit(float attackPower)
     {
 
+        currentHitPoints -= attackPower;
+        if (currentHitPoints <= 0)
+        {
+            print("game over");
+        }
     }
 
     public void Death()
